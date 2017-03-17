@@ -168,8 +168,9 @@ class Youku(VideoExtractor):
             self.title = kwargs['title']
 
         else:
-            api_url = 'http://play.youku.com/play/get.json?vid=%s&ct=10' % self.vid
-            api12_url = 'http://play.youku.com/play/get.json?vid=%s&ct=12' % self.vid
+            nowtime=int(float(time.time())*1000)
+            api_url = 'http://play-ali.youku.com/play/get.json?vid=%s&ct=10&time=%s' % (self.vid,nowtime)
+            api12_url = 'http://play-ali.youku.com/play/get.json?vid=%s&ct=12&time=%s' % (self.vid,nowtime)
 
         try:
             meta = json.loads(get_content(
@@ -229,14 +230,14 @@ class Youku(VideoExtractor):
                         'video_profile': stream_types[stream_id]['video_profile'],
                         'size': stream['size'],
                         'pieces': [{
-                            'fileid': stream['stream_fileid'],
+                            'fileid': [i['fileid'] for i in stream['segs']],
                             'segs': stream['segs']
                         }]
                     }
                 else:
                     self.streams[stream_id]['size'] += stream['size']
                     self.streams[stream_id]['pieces'].append({
-                        'fileid': stream['stream_fileid'],
+                        'fileid': [i['fileid'] for i in stream['segs']],
                         'segs': stream['segs']
                     })
 
@@ -253,14 +254,14 @@ class Youku(VideoExtractor):
                         'video_profile': stream_types[stream_id]['video_profile'],
                         'size': stream['size'],
                         'pieces': [{
-                            'fileid': stream['stream_fileid'],
+                            'fileid': [i['fileid'] for i in stream['segs']],
                             'segs': stream['segs']
                         }]
                     }
                 else:
                     self.streams_fallback[stream_id]['size'] += stream['size']
                     self.streams_fallback[stream_id]['pieces'].append({
-                        'fileid': stream['stream_fileid'],
+                        'fileid': [i['fileid'] for i in stream['segs']],
                         'segs': stream['segs']
                     })
 
@@ -295,8 +296,8 @@ class Youku(VideoExtractor):
                 pieces = self.streams[stream_id]['pieces']
                 for piece in pieces:
                     segs = piece['segs']
-                    streamfileid = piece['fileid']
                     for no in range(0, len(segs)):
+                        streamfileid = piece['fileid'][no]
                         k = segs[no]['key']
                         if k == -1: break # we hit the paywall; stop here
                         fileid, ep = self.__class__.generate_ep(self, no, streamfileid,
