@@ -111,7 +111,7 @@ class Iqiyi(VideoExtractor):
     vd_2_id = {10: '4k', 19: '4k', 5:'BD', 18: 'BD', 21: 'HD', 2: 'HD', 4: 'TD', 17: 'TD', 96: 'LD', 1: 'SD'}
     id_2_profile = {'4k':'4k', 'BD': '1080p','TD': '720p', 'HD': '540p', 'SD': '360p', 'LD': '210p'}
 
-#-----lzy0699-----list all video----
+#----------list all video----
     stream_types_add = [
         {'id': 'BD-h', 'container': 'm3u8', 'video_profile': '1080p-h'},
         {'id': '4k-h', 'container': 'm3u8', 'video_profile': '4k-h'},
@@ -119,12 +119,14 @@ class Iqiyi(VideoExtractor):
         {'id': 'HD-h', 'container': 'm3u8', 'video_profile': '540p-h'},
     ]
     ids_add = ['4k-h','BD-h', 'TD-h', 'HD-h']
+    vd_2_id_mod={19: '4k-h',18: 'BD-h', 21: 'HD-h',17: 'TD-h'}
     id_2_profile_add = {'4k-h':'4k-h','BD-h': '1080p-h','TD-h': '720p-h', 'HD-h': '540p-h'}
     stream_types+=stream_types_add
     ids+=ids_add
+    vd_2_id.update(vd_2_id_mod)
     id_2_profile.update(id_2_profile_add)
     
-#-----lzy0699-----list all video----
+#----------list all video----
 
     def download_playlist_by_url(self, url, **kwargs):
         self.url = url
